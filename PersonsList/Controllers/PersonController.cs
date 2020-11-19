@@ -4,8 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using PersonsList.Data;
 using PersonsList.Models;
 using PersonsList.Models.SortingModels;
-using PersonsList.Models.SortingModels.Comparers;
-using PersonsList.Models.SortingModels.Sorters;
+using PersonsList.Models.SortingModels.Factories;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -34,14 +33,16 @@ namespace TestingLab.Controllers
             return View(people);
         }
 
-        public IActionResult Sort(int method, int field, SortOrder order)
+        public IActionResult Sort(string method, string field, SortOrder? order)
         {
             List<PersonDto> people = _personDbContext.People
                 .Where(p => p.UserId == _userManager.GetUserId(User))
                 .Select(ToDto)
                 .ToList();
 
-            return View("Index", GetSortedPeople(people, method, field, order));
+            ISorter<PersonDto> personSorter = new PersonDtoSorterFactory(method, field, order).CreateSorter();
+
+            return View("Index", personSorter.Sort(people));
         }
 
         public IActionResult Create()
@@ -152,72 +153,6 @@ namespace TestingLab.Controllers
                 Email = person.Email,
                 Age = person.Age
             };
-        }
-
-        private List<PersonDto> GetSortedPeople(List<PersonDto> people, int method, int field, SortOrder order)
-        {
-            ISorter<PersonDto> sorter = null;
-
-            switch (method)
-            {
-                case 1:
-                    sorter = new BubbleSorter(GetComparer(field, order));
-                    break;
-
-                case 2:
-                    sorter = new ShakerSorter(GetComparer(field, order));
-                    break;
-
-                case 3:
-                    sorter = new InsertionSorter(GetComparer(field, order));
-                    break;
-
-                case 4:
-                    sorter = new SelectionSorter(GetComparer(field, order));
-                    break;
-
-                case 5:
-                    sorter = new MergeSorter(GetComparer(field, order));
-                    break;
-
-                default:
-                    break;
-            }           
-
-            return sorter?.Sort(people).ToList() ?? people;
-        }
-
-        private ISortComparer<PersonDto> GetComparer(int field, SortOrder order)
-        {
-            ISortComparer<PersonDto> sortComparer = null;
-
-            switch (field)
-            {
-                case 1:
-                    sortComparer = new NameComparer() { Order = order };
-                    break;
-
-                case 2:
-                    sortComparer = new SurnameComparer() { Order = order };
-                    break;
-
-                case 3:
-                    sortComparer = new MiddlenameComparer() { Order = order };
-                    break;
-
-                case 4:
-                    sortComparer = new EmailComparer() { Order = order };
-                    break;
-
-                case 5:
-                    sortComparer = new AgeComparer() { Order = order };
-                    break;
-
-                default:
-                    break;
-            }
-
-            return sortComparer ?? new NameComparer();
         }
     }
 }
