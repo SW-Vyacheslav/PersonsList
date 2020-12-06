@@ -46,7 +46,6 @@
 
     @using (Html.BeginForm("Delete", "Person", new { id = Model.Id }, FormMethod.Post))
     {
-        @Html.AntiForgeryToken()
         <input type="submit" value="Delete" class="btn btn-danger" />
         <div style="display:inline-block;">|</div>
         <a asp-action="Index">Back to List</a>

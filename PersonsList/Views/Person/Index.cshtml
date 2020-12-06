@@ -13,7 +13,6 @@
 <p>
     @using (Html.BeginForm("Sort", "Person", FormMethod.Get))
     {
-        @Html.AntiForgeryToken()
         <select name="method" class="custom-select" style="width:15%;">
             <option value="BubbleSort">Bubble Sort</option>
             <option value="ShakerSort">Shaker Sort</option>

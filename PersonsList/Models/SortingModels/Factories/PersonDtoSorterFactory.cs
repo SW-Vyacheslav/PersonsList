@@ -6,31 +6,6 @@ namespace PersonsList.Models.SortingModels.Factories
 {
     public class PersonDtoSorterFactory : SorterFactory<PersonDto>
     {
-        public static readonly List<string> SortFields;
-
-        public static readonly List<string> SortMethods;
-
-        static PersonDtoSorterFactory()
-        {
-            SortFields = new List<string>()
-            {
-                "Name",
-                "Surname",
-                "Middlename",
-                "Email",
-                "Age"
-            };
-
-            SortMethods = new List<string>()
-            {
-                "BubbleSort",
-                "ShakerSort",
-                "InsertionSort",
-                "SelectionSort",
-                "MergeSort"
-            };
-        }
-
         private string _sortMethod { get; set; }
 
         private string _sortField { get; set; }
@@ -39,15 +14,9 @@ namespace PersonsList.Models.SortingModels.Factories
 
         public PersonDtoSorterFactory(string sortMethod = null, string sortField = null, SortOrder? sortOrder = null)
         {
-            _sortMethod = sortMethod ?? SortMethods[0];
-            _sortField = sortField ?? SortFields[0];
+            _sortMethod = sortMethod ?? "BubbleSort";
+            _sortField = sortField ?? "Name";
             _sortOrder = sortOrder ?? SortOrder.Ascending;
-
-            if (!SortMethods.Contains(_sortMethod))
-                _sortMethod = SortMethods[0];
-
-            if (!SortFields.Contains(_sortField))
-                _sortField = SortFields[0];
         }
 
         public override ISorter<PersonDto> CreateSorter()

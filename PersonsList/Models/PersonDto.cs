@@ -32,6 +32,22 @@ namespace PersonsList.Models
             };
         }
 
+        public override bool Equals(object obj)
+        {
+            return obj is PersonDto dto &&
+                   Id == dto.Id &&
+                   Name == dto.Name &&
+                   Surname == dto.Surname &&
+                   Middlename == dto.Middlename &&
+                   Email == dto.Email &&
+                   Age == dto.Age;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Id, Name, Surname, Middlename, Email, Age);
+        }
+
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             List<ValidationResult> errors = new List<ValidationResult>();
